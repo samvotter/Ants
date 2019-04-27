@@ -1,18 +1,26 @@
-import Tile as t
-import Ant as a
-
+from tkinter import *
 import random as r
 import math as m
+
+import Tile as t
+import Ant as a
 
 
 class Terrain:
 
-    def __init__(self, x, y):
+    def __init__(self, frame, WIDTH, HEIGHT, x, y):
+        # canvas details
+        self.frame = frame
+        self.width = WIDTH
+        self.height = HEIGHT
+        self.x = x
+        self.y = y
+
         self.land = []
         for i in range(0, x):
             self.land.append([])
             for j in range(0, y):
-                self.land[i].append(t.Tile())
+                self.land[i].append(t.Tile(frame, WIDTH, HEIGHT, x, y, i, j))
         for i in range(0, x):
             for j in range(0, y):
                 if i - 1 >= 0:
@@ -39,7 +47,15 @@ class Terrain:
         self.ants = []
 
     def addAnt(self):
-        self.ants.append(a.Ant(self.land[self.startx][self.starty]))
+        self.ants.append(a.Ant(self.frame, self.width, self.height, self.x, self.y,
+                               self.land[self.startx][self.starty]))
+
+    def decay(self):
+        for row in self.land:
+            for col in row:
+                col.value -= 1
+                if col.value < col.minimum:
+                    col.value = col.minimum
 
     def textPrint(self):
         for row in range(0, len(self.land)):
@@ -56,4 +72,14 @@ class Terrain:
             print("")
         print("")
 
-        # canvas details
+    def textPrintFinal(self):
+        for row in range(0, len(self.land)):
+            for col in range(0, len(self.land[row])):
+                if self.land[row][col].start:
+                    print("[ S ]", end="")
+                elif self.land[row][col].target:
+                    print("[ T ]", end="")
+                else:
+                    print("[", int(self.land[row][col].value), "]", end="")
+            print("")
+        print("")

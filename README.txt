@@ -1,0 +1,1 @@
+Run the GUI as if it were main
